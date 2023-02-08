@@ -214,30 +214,37 @@ class MyWidget(QTabWidget):
             print(self.button5_3.objectName())   
             temp = self.button5_3.objectName()
             result1 = result.replace(" " , "")
+            result1 = result1.replace("X" , "*")
+            print("result1 = " + result1)
+            temp3 = eval(str(result1))
+            print(type(temp3))
+            print("eval = ",temp3)
             result1 = result1 + temp
-            result = result + temp
+        
+            # result = result + temp
             
-            print(result1)
-            numbers_1 = int(re.findall('\d+', result1)[0])
-            numbers_2 = int(re.findall('\d+', result1)[1])
-            if "X" in result1:
-                temp = numbers_1*numbers_2
-                print(numbers_1*numbers_2)
-                # result = result + temp
-            if "+" in result1:
-                temp = numbers_1+numbers_2
-                print(numbers_1+numbers_2)
-            if "-" in result1:
-                temp = numbers_1-numbers_2
-                print(numbers_1-numbers_2)
-            if "/" in result1:
-                temp = numbers_1/numbers_2
-                print(numbers_1/numbers_2)
+            
+            
+            # numbers_1 = int(re.findall('\d+', result1)[0])
+            # numbers_2 = int(re.findall('\d+', result1)[1])
+            # if "X" in result1:
+            #     temp = numbers_1*numbers_2
+            #     print(numbers_1*numbers_2)
+            #     # result = result + temp
+            # if "+" in result1:
+            #     temp = numbers_1+numbers_2
+            #     print(numbers_1+numbers_2)
+            # if "-" in result1:
+            #     temp = numbers_1-numbers_2
+            #     print(numbers_1-numbers_2)
+            # if "/" in result1:
+            #     temp = numbers_1/numbers_2
+            #     print(numbers_1/numbers_2)
                         
-            result1 = result1 + str(temp)
-            result = result + str(temp)            
+            result1 = result1 + str(temp3)
+            # result = result + str(temp3)            
 
-            self.text_edit.setText(result)
+            self.text_edit.setText(result1)
         elif sender is self.button5_4:     
             print(self.button5_4.objectName())   
             temp = self.button5_4.objectName()
@@ -245,7 +252,7 @@ class MyWidget(QTabWidget):
             self.text_edit.setText(result)    
                 
         # 화면에 display 보기 쉽게 한칸 추가함
-        result = result + " "
+        # result = result + " "
             
  
 if __name__ == "__main__":
