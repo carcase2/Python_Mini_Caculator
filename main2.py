@@ -6,14 +6,19 @@ from PySide6.QtCore import Slot
 import re
 
 result = ''
+result_state = False
        
 class MyWidget(QTabWidget):
     def __init__(self):
         super().__init__()
+        self.text_edit = QLineEdit("",self)
+        self.createButtons()
+        
 
-
-        self.text_edit =  QLineEdit()
+    def createButtons(self):        
+        # self.text_edit =  QLineEdit()
         # self.text_edit.resize(100,100)
+        button_list = ['(',')','%','AC','7', '8', '9', '/', '4', '5', '6', '*', '1', '2', '3', '-', '0', '.', '=', '+']
         self.button1_1 =  QPushButton('(')
         self.button1_2 =  QPushButton(')')
         self.button1_3 =  QPushButton('%')
@@ -117,95 +122,172 @@ class MyWidget(QTabWidget):
 
     def onCheck(self):    
         global result
+        global result_state
         sender = self.sender()
         # print(self.button1_1)
+        
         if sender is self.button1_1:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False
             print(self.button1_1.objectName())   
             temp = self.button1_1.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button1_2:     
+        elif sender is self.button1_2: 
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False    
             print(self.button1_2.objectName())   
             temp = self.button1_2.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button1_3:     
+        elif sender is self.button1_3:   
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False  
             print(self.button1_3.objectName())   
             temp = self.button1_3.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button1_4:     
+        elif sender is self.button1_4:   
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False  
             print(self.button1_4.objectName())   
             temp = self.button1_4.objectName()
             # result = result + temp
             self.text_edit.clear()
             result = ""
         elif sender is self.button2_1:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False
             print(self.button2_1.objectName())   
             temp = self.button2_1.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button2_2:     
+        elif sender is self.button2_2:   
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False  
             print(self.button2_2.objectName())   
             temp = self.button2_2.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button2_3:     
+        elif sender is self.button2_3:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False     
             print(self.button2_3.objectName())   
             temp = self.button2_3.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button2_4:     
+        elif sender is self.button2_4:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False     
             print(self.button2_4.objectName())   
             temp = self.button2_4.objectName()
             result = result + temp
             self.text_edit.setText(result)
         elif sender is self.button3_1:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False
             print(self.button3_1.objectName())   
             temp = self.button3_1.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button3_2:     
+        elif sender is self.button3_2:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False     
             print(self.button3_2.objectName())   
             temp = self.button3_2.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button3_3:     
+        elif sender is self.button3_3:  
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False   
             print(self.button3_3.objectName())   
             temp = self.button3_3.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button3_4:     
+        elif sender is self.button3_4:  
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False   
             print(self.button3_4.objectName())   
             temp = self.button3_4.objectName()
             result = result + temp
             self.text_edit.setText(result)
         elif sender is self.button4_1:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False
+                
+            self.text_edit.clear()
+            result = ""
             print(self.button4_1.objectName())   
             temp = self.button4_1.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button4_2:     
+        elif sender is self.button4_2:  
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False   
             print(self.button4_2.objectName())   
             temp = self.button4_2.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button4_3:     
+        elif sender is self.button4_3: 
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False    
             print(self.button4_3.objectName())   
             temp = self.button4_3.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button4_4:     
+        elif sender is self.button4_4:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False     
             print(self.button4_4.objectName())   
             temp = self.button4_4.objectName()
             result = result + temp
             self.text_edit.setText(result)    
         elif sender is self.button5_1:
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False
             print(self.button5_1.objectName())   
             temp = self.button5_1.objectName()
             result = result + temp
             self.text_edit.setText(result)
-        elif sender is self.button5_2:     
+        elif sender is self.button5_2:  
+            if result_state is True:
+                self.text_edit.clear()
+                result = ""
+                result_state = False   
             print(self.button5_2.objectName())   
             temp = self.button5_2.objectName()
             result = result + temp
@@ -245,6 +327,8 @@ class MyWidget(QTabWidget):
             # result = result + str(temp3)            
 
             self.text_edit.setText(result1)
+            result_state = True
+            
         elif sender is self.button5_4:     
             print(self.button5_4.objectName())   
             temp = self.button5_4.objectName()
