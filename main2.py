@@ -1,385 +1,105 @@
 
 import sys
 from PySide6 import QtCore, QtGui
-from PySide6.QtWidgets import QApplication, QPushButton,QTabWidget,QTextEdit,QVBoxLayout,QHBoxLayout,QGridLayout,QLineEdit
-from PySide6.QtCore import Slot,Qt
+
+from PySide6.QtWidgets import QApplication, QMainWindow, QLineEdit, QPushButton, QHBoxLayout, QVBoxLayout, QWidget, QGridLayout
+from PySide6.QtCore import Slot, Qt
+
 import re
 
 result = ''
 result_state = False
-       
-class MyWidget(QTabWidget):
+count = 0
+
+class MyWidget(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setFixedSize(300, 300)
         self.setWindowTitle("Caculate by KKD")
-        
+
         # create display
-        self.text_edit = QLineEdit("",self)
-        self.text_edit.setFixedSize(280,40)
+        self.text_edit = QLineEdit("", self)
+        self.text_edit.setFixedSize(280, 40)
         # 오른쪽 정렬
         self.text_edit.setAlignment(Qt.AlignRight)
-        # 읽기만 가능하게 
+        # 읽기만 가능하게
         self.text_edit.setReadOnly(True)
-        
+
         # button 만들기
         self.createButtons()
-        
 
-    def createButtons(self):        
+        # set main layout
+        main_layout = QVBoxLayout()
+        main_layout.addWidget(self.text_edit)
+        main_layout.addLayout(self.buttons_layout)
+        central_widget = QWidget(self)
+        central_widget.setLayout(main_layout)
+        self.setCentralWidget(central_widget)
+
+    def createButtons(self):
+        global count
         self.buttons = {
-            "7": (0, 0),
-            "8": (0, 1),
-            "9": (0, 2),
-            "/": (0, 3),
-            "4": (1, 0),
-            "5": (1, 1),
-            "6": (1, 2),
-            "*": (1, 3),
-            "1": (2, 0),
-            "2": (2, 1),
-            "3": (2, 2),
-            "-": (2, 3),
-            "0": (3, 0),
-            "C": (3, 1),
-            "=": (3, 2),
-            "+": (3, 3),
+            "(": (0, 0),
+            ")": (0, 1),
+            "%": (0, 2),
+            "AC": (0, 3),
+            "7": (1, 0),
+            "8": (1, 1),
+            "9": (1, 2),
+            "/": (1, 3),
+            "4": (2, 0),
+            "5": (2, 1),
+            "6": (2, 2),
+            "*": (2, 3),
+            "1": (3, 0),
+            "2": (3, 1),
+            "3": (3, 2),
+            "-": (3, 3),
+            "0": (4, 0),
+            ".": (4, 1),
+            "=": (4, 2),
+            "+": (4, 3)
         }
-        print(self.buttons)
-        print(type(self.buttons))
-        
+        # print(self.buttons.items())
+        # print(type(self.buttons.items()))
+
         self.buttons_layout = QGridLayout()
         for btn_text, pos in self.buttons.items():
+            print("btn_text = ",btn_text)
+            print("pos = ",pos)
             button = QPushButton(btn_text)
+            print(type(button))
             button.clicked.connect(self.handle_button)
             self.buttons_layout.addWidget(button, pos[0], pos[1])
-        self.button1_1 =  QPushButton('(')
-        self.button1_2 =  QPushButton(')')
-        self.button1_3 =  QPushButton('%')
-        self.button1_4 =  QPushButton('AC')
-    
-        self.button2_1 =  QPushButton('7')
-        self.button2_2 =  QPushButton('8')
-        self.button2_3 =  QPushButton('9')
-        self.button2_4 =  QPushButton('/')
 
-        self.button3_1 =  QPushButton('4')
-        self.button3_2 =  QPushButton('5')
-        self.button3_3 =  QPushButton('6')
-        self.button3_4 =  QPushButton('X')
-
-        self.button4_1 =  QPushButton('1')
-        self.button4_2 =  QPushButton('2')
-        self.button4_3 =  QPushButton('3')
-        self.button4_4 =  QPushButton('-')
-
-        self.button5_1 =  QPushButton('0')
-        self.button5_2 =  QPushButton('.')
-        self.button5_3 =  QPushButton('=')
-        self.button5_4 =  QPushButton('+')
-
-        self.button1_1.setObjectName('(')
-        self.button1_2.setObjectName(')')
-        self.button1_3.setObjectName('%')
-        self.button1_4.setObjectName('AC')
-        self.button2_1.setObjectName('7')
-        self.button2_2.setObjectName('8')
-        self.button2_3.setObjectName('9')
-        self.button2_4.setObjectName('/')
-        self.button3_1.setObjectName('4')
-        self.button3_2.setObjectName('5')
-        self.button3_3.setObjectName('6')
-        self.button3_4.setObjectName('X')
-        self.button4_1.setObjectName('1')
-        self.button4_2.setObjectName('2')
-        self.button4_3.setObjectName('3')
-        self.button4_4.setObjectName('-')
-        self.button5_1.setObjectName('0')
-        self.button5_2.setObjectName('.')
-        self.button5_3.setObjectName('=')
-        self.button5_4.setObjectName('+') 
-
-        layout1 =  QVBoxLayout(self)
-        layout_Number = QGridLayout()
-        
-        layout1.addWidget(self.text_edit)
-        
-        layout_Number.addWidget(self.button1_1,0,0)
-        layout_Number.addWidget(self.button1_2,0,1)
-        layout_Number.addWidget(self.button1_3,0,2)
-        layout_Number.addWidget(self.button1_4,0,3)
-        
-        layout_Number.addWidget(self.button2_1,1,0)
-        layout_Number.addWidget(self.button2_2,1,1)
-        layout_Number.addWidget(self.button2_3,1,2)
-        layout_Number.addWidget(self.button2_4,1,3)
-                
-        layout_Number.addWidget(self.button3_1,2,0)
-        layout_Number.addWidget(self.button3_2,2,1)
-        layout_Number.addWidget(self.button3_3,2,2)
-        layout_Number.addWidget(self.button3_4,2,3)
-        
-        layout_Number.addWidget(self.button4_1,3,0)
-        layout_Number.addWidget(self.button4_2,3,1)
-        layout_Number.addWidget(self.button4_3,3,2)
-        layout_Number.addWidget(self.button4_4,3,3)
-        
-        layout_Number.addWidget(self.button5_1,4,0)
-        layout_Number.addWidget(self.button5_2,4,1)
-        layout_Number.addWidget(self.button5_3,4,2)
-        layout_Number.addWidget(self.button5_4,4,3)
-        
-        layout1.addLayout(layout_Number)
-
-        self.button1_1.clicked.connect(self.onCheck)
-        self.button1_2.clicked.connect(self.onCheck)
-        self.button1_3.clicked.connect(self.onCheck)
-        self.button1_4.clicked.connect(self.onCheck)
-        self.button2_1.clicked.connect(self.onCheck)
-        self.button2_2.clicked.connect(self.onCheck)
-        self.button2_3.clicked.connect(self.onCheck)
-        self.button2_4.clicked.connect(self.onCheck)
-        self.button3_1.clicked.connect(self.onCheck)
-        self.button3_2.clicked.connect(self.onCheck)
-        self.button3_3.clicked.connect(self.onCheck)
-        self.button3_4.clicked.connect(self.onCheck)
-        self.button4_1.clicked.connect(self.onCheck)
-        self.button4_2.clicked.connect(self.onCheck)
-        self.button4_3.clicked.connect(self.onCheck)
-        self.button4_4.clicked.connect(self.onCheck)
-        self.button5_1.clicked.connect(self.onCheck)
-        self.button5_2.clicked.connect(self.onCheck)
-        self.button5_3.clicked.connect(self.onCheck)
-        self.button5_4.clicked.connect(self.onCheck)
-        
-        print(self.button1_1.objectName())
-        
-    def check_result(self):
-        if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False
-             
-    def onCheck(self):    
-        global result
+    def handle_button(self):
         global result_state
-        sender = self.sender()
-        # print(self.button1_1)
-        
-        if sender is self.button1_1:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False
-            print(self.button1_1.objectName())   
-            temp = self.button1_1.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button1_2: 
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False    
-            print(self.button1_2.objectName())   
-            temp = self.button1_2.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button1_3:   
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False  
-            print(self.button1_3.objectName())   
-            temp = self.button1_3.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button1_4:   
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False  
-            print(self.button1_4.objectName())   
-            temp = self.button1_4.objectName()
-            # result = result + temp
+        print(result_state)
+        button = self.sender()
+        if button.text() == "=":
+            try:
+                temp = self.text_edit.text()
+                result = eval(self.text_edit.text())
+                self.text_edit.setText(temp + button.text() + str(result))
+                result_state = True
+            except:
+                self.text_edit.setText("Error")
+        elif button.text() == "AC":
             self.text_edit.clear()
-            result = ""
-        elif sender is self.button2_1:
-            if result_state is True:
+        else:
+            if result_state == True:
                 self.text_edit.clear()
-                result = ""
+                self.text_edit.setText(self.text_edit.text() + button.text())
                 result_state = False
-            print(self.button2_1.objectName())   
-            temp = self.button2_1.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button2_2:   
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False  
-            print(self.button2_2.objectName())   
-            temp = self.button2_2.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button2_3:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False     
-            print(self.button2_3.objectName())   
-            temp = self.button2_3.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button2_4:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False     
-            print(self.button2_4.objectName())   
-            temp = self.button2_4.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button3_1:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False
-            print(self.button3_1.objectName())   
-            temp = self.button3_1.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button3_2:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False     
-            print(self.button3_2.objectName())   
-            temp = self.button3_2.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button3_3:  
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False   
-            print(self.button3_3.objectName())   
-            temp = self.button3_3.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button3_4:  
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False   
-            print(self.button3_4.objectName())   
-            temp = self.button3_4.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button4_1:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False
-                
-            self.text_edit.clear()
-            result = ""
-            print(self.button4_1.objectName())   
-            temp = self.button4_1.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button4_2:  
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False   
-            print(self.button4_2.objectName())   
-            temp = self.button4_2.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button4_3: 
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False    
-            print(self.button4_3.objectName())   
-            temp = self.button4_3.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button4_4:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False     
-            print(self.button4_4.objectName())   
-            temp = self.button4_4.objectName()
-            result = result + temp
-            self.text_edit.setText(result)    
-        elif sender is self.button5_1:
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False
-            print(self.button5_1.objectName())   
-            temp = self.button5_1.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button5_2:  
-            if result_state is True:
-                self.text_edit.clear()
-                result = ""
-                result_state = False   
-            print(self.button5_2.objectName())   
-            temp = self.button5_2.objectName()
-            result = result + temp
-            self.text_edit.setText(result)
-        elif sender is self.button5_3:                
-            print(self.button5_3.objectName())   
-            temp = self.button5_3.objectName()
-            result1 = result.replace(" " , "")
-            result1 = result1.replace("X" , "*")
-            print("result1 = " + result1)
-            temp3 = eval(str(result1))
-            print(type(temp3))
-            print("eval = ",temp3)
-            result1 = result1 + temp
-        
-            # result = result + temp
-            
-            
-            
-            # numbers_1 = int(re.findall('\d+', result1)[0])
-            # numbers_2 = int(re.findall('\d+', result1)[1])
-            # if "X" in result1:
-            #     temp = numbers_1*numbers_2
-            #     print(numbers_1*numbers_2)
-            #     # result = result + temp
-            # if "+" in result1:
-            #     temp = numbers_1+numbers_2
-            #     print(numbers_1+numbers_2)
-            # if "-" in result1:
-            #     temp = numbers_1-numbers_2
-            #     print(numbers_1-numbers_2)
-            # if "/" in result1:
-            #     temp = numbers_1/numbers_2
-            #     print(numbers_1/numbers_2)
-                        
-            result1 = result1 + str(temp3)
-            # result = result + str(temp3)            
+            else:
+                self.text_edit.setText(self.text_edit.text() + button.text())
 
-            self.text_edit.setText(result1)
-            result_state = True
-            
-        elif sender is self.button5_4:     
-            print(self.button5_4.objectName())   
-            temp = self.button5_4.objectName()
-            result = result + temp
-            self.text_edit.setText(result)    
-            
+
 if __name__ == "__main__":
-    app =  QApplication()
-   
+    app = QApplication()
+
     widget = MyWidget()
 
-    widget.show()  
-    
+    widget.show()
+
     sys.exit(app.exec())
